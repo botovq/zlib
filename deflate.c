@@ -1313,12 +1313,12 @@ int ZEXPORT deflateEnd(z_streamp strm) {
     status = strm->state->status;
 
     /* Deallocate in reverse order of allocations: */
-    TRY_FREE(strm, strm->state->pending_buf);
-    TRY_FREE(strm, strm->state->head);
-    TRY_FREE(strm, strm->state->prev);
-    TRY_FREE(strm, strm->state->window);
+    TRY_FREE(strm, strm->state->pending_buf, strm->state->pending_buf_size);
+    TRY_FREE(strm, strm->state->head, strm->state->hash_size * sizeof(Pos));
+    TRY_FREE(strm, strm->state->prev, strm->state->w_size * sizeof(Pos));
+    TRY_FREE(strm, strm->state->window, strm->state->w_size * 2 * sizeof(Byte));
 
-    ZFREE(strm, strm->state);
+    ZFREE(strm, strm->state, sizeof(deflate_state));
     strm->state = Z_NULL;
 
     return status == BUSY_STATE ? Z_DATA_ERROR : Z_OK;
@@ -1360,11 +1360,11 @@ int ZEXPORT deflateCopy(z_streamp dest, z_streamp source) {
     ds->pending_buf = (uchf *) ZALLOC(source, ds->lit_bufsize, LIT_BUFS);
     if (ds->window == Z_NULL || ds->prev == Z_NULL || ds->head == Z_NULL ||
         ds->pending_buf == Z_NULL) {
-        TRY_FREE(source, ds->pending_buf);
-        TRY_FREE(source, ds->head);
-        TRY_FREE(source, ds->prev);
-        TRY_FREE(source, ds->window);
-        ZFREE(source, ds);
+        TRY_FREE(source, ds->pending_buf, ds->lit_bufsize * LIT_BUFS);
+        TRY_FREE(source, ds->head, ds->hash_size * sizeof(Pos));
+        TRY_FREE(source, ds->prev, ds->w_size * sizeof(Pos));
+        TRY_FREE(source, ds->window, ds->w_size * 2 * sizeof(Byte));
+        ZFREE(source, ds, sizeof(deflate_state));
         dest->state = Z_NULL;
         return Z_MEM_ERROR;
     }
