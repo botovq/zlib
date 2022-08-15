@@ -168,8 +168,12 @@ void ZLIB_INTERNAL inflate_fast(z_streamp strm, unsigned start) {
                     op = dist - op;             /* distance back in window */
                     if (op > whave) {
                         if (state->sane) {
+#ifdef SMALL
+                            strm->msg = (z_const char *)"error";
+#else
                             strm->msg =
                                 (z_const char *)"invalid distance too far back";
+#endif
                             state->mode = BAD;
                             break;
                         }
@@ -265,7 +269,11 @@ void ZLIB_INTERNAL inflate_fast(z_streamp strm, unsigned start) {
                 goto dodist;
             }
             else {
+#ifdef SMALL
+                strm->msg = (z_const char *)"error";
+#else
                 strm->msg = (z_const char *)"invalid distance code";
+#endif
                 state->mode = BAD;
                 break;
             }
@@ -280,7 +288,11 @@ void ZLIB_INTERNAL inflate_fast(z_streamp strm, unsigned start) {
             break;
         }
         else {
+#ifdef SMALL
+            strm->msg = (z_const char *)"error";
+#else
             strm->msg = (z_const char *)"invalid literal/length code";
+#endif
             state->mode = BAD;
             break;
         }
