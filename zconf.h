@@ -259,7 +259,7 @@
 #  if defined(NO_SIZE_T)
      typedef unsigned NO_SIZE_T z_size_t;
 #  elif defined(STDC)
-#    include <stddef.h>
+#    include <sys/types.h>
      typedef size_t z_size_t;
 #  else
      typedef unsigned long z_size_t;
@@ -425,7 +425,7 @@ typedef uLong FAR uLongf;
 #endif
 
 #if !defined(Z_U4) && !defined(Z_SOLO) && defined(STDC)
-#  include <limits.h>
+#  include <sys/limits.h>
 #  if (UINT_MAX == 0xffffffffUL)
 #    define Z_U4 unsigned
 #  elif (ULONG_MAX == 0xffffffffUL)
@@ -439,6 +439,10 @@ typedef uLong FAR uLongf;
    typedef Z_U4 z_crc_t;
 #else
    typedef unsigned long z_crc_t;
+#endif
+
+#ifdef _KERNEL
+#  define Z_HAVE_UNISTD_H
 #endif
 
 #if HAVE_UNISTD_H-0     /* may be set to #if 1 by ./configure */
@@ -457,7 +461,7 @@ typedef uLong FAR uLongf;
 
 #if defined(STDC) || defined(Z_HAVE_STDARG_H)
 #  ifndef Z_SOLO
-#    include <stdarg.h>         /* for va_list */
+#    include <sys/stdarg.h>         /* for va_list */
 #  endif
 #endif
 
@@ -485,7 +489,7 @@ typedef uLong FAR uLongf;
 #endif
 #ifndef Z_SOLO
 #  if defined(Z_HAVE_UNISTD_H)
-#    include <unistd.h>         /* for SEEK_*, off_t, and _LFS64_LARGEFILE */
+#    include <sys/unistd.h>         /* for SEEK_*, off_t, and _LFS64_LARGEFILE */
 #    ifdef VMS
 #      include <unixio.h>       /* for off_t */
 #    endif
