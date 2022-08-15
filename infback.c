@@ -503,6 +503,7 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
                 /* fallthrough */
 
         case LEN:
+#ifndef SLOW
             /* use inflate_fast() if we have enough input and output */
             if (have >= 6 && left >= 258) {
                 RESTORE();
@@ -512,6 +513,7 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
                 LOAD();
                 break;
             }
+#endif
 
             /* get a literal, length, or end-of-block code */
             for (;;) {
