@@ -79,7 +79,7 @@ extern "C" {
 */
 
 typedef voidpf (*alloc_func)(voidpf opaque, uInt items, uInt size);
-typedef void   (*free_func)(voidpf opaque, voidpf address);
+typedef void   (*free_func)(voidpf opaque, voidpf address, uInt size);
 
 struct internal_state;
 

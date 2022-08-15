@@ -671,7 +671,7 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
 int ZEXPORT inflateBackEnd(z_streamp strm) {
     if (strm == Z_NULL || strm->state == Z_NULL || strm->zfree == (free_func)0)
         return Z_STREAM_ERROR;
-    ZFREE(strm, strm->state);
+    ZFREE(strm, strm->state, sizeof(struct inflate_state));
     strm->state = Z_NULL;
     Tracev((stderr, "inflate: end\n"));
     return Z_OK;

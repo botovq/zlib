@@ -1267,12 +1267,12 @@ int ZEXPORT deflateEnd(z_streamp strm) {
     status = strm->state->status;
 
     /* Deallocate in reverse order of allocations: */
-    TRY_FREE(strm, strm->state->pending_buf);
-    TRY_FREE(strm, strm->state->head);
-    TRY_FREE(strm, strm->state->prev);
-    TRY_FREE(strm, strm->state->window);
+    TRY_FREE(strm, strm->state->pending_buf, strm->state->pending_buf_size);
+    TRY_FREE(strm, strm->state->head, strm->state->hash_size * sizeof(Pos));
+    TRY_FREE(strm, strm->state->prev, strm->state->w_size * sizeof(Pos));
+    TRY_FREE(strm, strm->state->window, strm->state->w_size * 2 * sizeof(Byte));
 
-    ZFREE(strm, strm->state);
+    ZFREE(strm, strm->state, sizeof(deflate_state));
     strm->state = Z_NULL;
 
     return status == BUSY_STATE ? Z_DATA_ERROR : Z_OK;

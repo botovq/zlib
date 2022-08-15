@@ -165,7 +165,7 @@ int ZEXPORT inflateReset2(z_streamp strm, int windowBits) {
     if (windowBits && (windowBits < 8 || windowBits > 15))
         return Z_STREAM_ERROR;
     if (state->window != Z_NULL && state->wbits != (unsigned)windowBits) {
-        ZFREE(strm, state->window);
+        ZFREE(strm, state->window, 1U << state->wbits);
         state->window = Z_NULL;
     }
 
@@ -209,7 +209,7 @@ int ZEXPORT inflateInit2_(z_streamp strm, int windowBits,
     state->mode = HEAD;     /* to pass state test in inflateReset2() */
     ret = inflateReset2(strm, windowBits);
     if (ret != Z_OK) {
-        ZFREE(strm, state);
+        ZFREE(strm, state, sizeof(struct inflate_state));
         strm->state = Z_NULL;
     }
     return ret;
@@ -1354,8 +1354,8 @@ int ZEXPORT inflateEnd(z_streamp strm) {
     if (inflateStateCheck(strm))
         return Z_STREAM_ERROR;
     state = (struct inflate_state FAR *)strm->state;
-    if (state->window != Z_NULL) ZFREE(strm, state->window);
-    ZFREE(strm, strm->state);
+    if (state->window != Z_NULL) ZFREE(strm, state->window, 1U << state->wbits);
+    ZFREE(strm, strm->state, sizeof(struct inflate_state));
     strm->state = Z_NULL;
     Tracev((stderr, "inflate: end\n"));
     return Z_OK;
@@ -1542,7 +1542,7 @@ int ZEXPORT inflateCopy(z_streamp dest, z_streamp source) {
         window = (unsigned char FAR *)
                  ZALLOC(source, 1U << state->wbits, sizeof(unsigned char));
         if (window == Z_NULL) {
-            ZFREE(source, copy);
+            ZFREE(source, copy, sizeof(struct inflate_state));
             return Z_MEM_ERROR;
         }
     }
