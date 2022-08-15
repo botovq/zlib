@@ -4,8 +4,11 @@
  */
 
 #include "zutil.h"
+
+#ifndef _KERNEL
 #ifndef Z_SOLO
 #  include "gzguts.h"
+#endif
 #endif
 
 z_const char * const z_errmsg[10] = {
