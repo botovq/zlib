@@ -19,12 +19,29 @@
 
 #include "zlib.h"
 
+#ifdef _KERNEL
+#include <sys/param.h>
+#include <sys/systm.h>
+
+#define MY_ZCALLOC
+
+typedef long ptrdiff_t;
+#else
+#ifdef _STANDALONE
+#include <lib/libsa/stand.h>
+#else
 #if defined(STDC) && !defined(Z_SOLO)
 #  if !(defined(_WIN32_WCE) && defined(_MSC_VER))
 #    include <stddef.h>
 #  endif
 #  include <string.h>
 #  include <stdlib.h>
+#endif
+#endif
+#endif
+
+#ifdef Z_SOLO
+   typedef long ptrdiff_t;
 #endif
 
 #ifndef local
@@ -41,7 +58,7 @@ typedef ush FAR ushf;
 typedef unsigned long  ulg;
 
 #if !defined(Z_U8) && !defined(Z_SOLO) && defined(STDC)
-#  include <limits.h>
+#  include <sys/limits.h>
 #  if (ULONG_MAX == 0xffffffffffffffff)
 #    define Z_U8 unsigned long
 #  elif (ULLONG_MAX == 0xffffffffffffffff)
