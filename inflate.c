@@ -981,6 +981,7 @@ int ZEXPORT inflate(z_streamp strm, int flush) {
             state->mode = LEN;
                 /* fallthrough */
         case LEN:
+#ifndef SLOW
             if (have >= 6 && left >= 258 && bits < 8) {
                 RESTORE();
                 inflate_fast(strm, out);
@@ -989,6 +990,7 @@ int ZEXPORT inflate(z_streamp strm, int flush) {
                     state->back = -1;
                 break;
             }
+#endif
             state->back = 0;
             for (;;) {
                 here = state->lencode[BITS(state->lenbits)];
