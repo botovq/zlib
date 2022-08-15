@@ -215,7 +215,7 @@ typedef struct once_s once_t;
 
 /* Check for the availability of atomics. */
 #if defined(__STDC__) && __STDC_VERSION__ >= 201112L && \
-    !defined(__STDC_NO_ATOMICS__)
+    !defined(__STDC_NO_ATOMICS__) && !defined(SMALL)
 
 #include <stdatomic.h>
 
