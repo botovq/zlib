@@ -444,6 +444,9 @@ typedef uLong FAR uLongf;
 #ifdef _KERNEL
 #  define Z_HAVE_UNISTD_H
 #endif
+#ifdef _STANDALONE
+#  define z_off_t long
+#endif
 
 #if HAVE_UNISTD_H-0     /* may be set to #if 1 by ./configure */
 #  define Z_HAVE_UNISTD_H
