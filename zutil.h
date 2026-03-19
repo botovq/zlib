@@ -309,8 +309,6 @@ local void z_once(z_once_t *state, void (*init)(void)) {
 
 #else   /* no atomics */
 
-#warning zlib not thread-safe
-
 typedef struct z_once_s {
     volatile int begun;
     volatile int done;
