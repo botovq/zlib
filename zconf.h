@@ -443,6 +443,7 @@ typedef uLong FAR uLongf;
 
 #ifdef _KERNEL
 #  define Z_HAVE_UNISTD_H
+#  include <sys/_null.h>
 #endif
 #ifdef _STANDALONE
 #  define z_off_t long
